@@ -1,5 +1,6 @@
 #include <iostream>
-#include "Parsing/ParserCommand.hpp"
+#include "Parsing/Parser.hpp"
+#include "Analize/Analizer.hpp"
 
 using namespace std;
 
@@ -7,12 +8,10 @@ using namespace std;
 
 int main()
 {
-    std::string str{"VAX"};
+    Analize::Analizer analyzer;
+    Parsing::Parser parser(analyzer);
 
-    auto v=std::make_unique<std::string>("DDD");
-
-    Parsing::ParserCommand testCmd{Parsing::Lexeme::Command};
-    Parsing::ParserCommand testCmd2{Parsing::Lexeme::DynamicBlockStart, v};
+    parser.parse();
 
     cout << "Hello World!" << endl;
     return 0;
