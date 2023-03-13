@@ -11,6 +11,7 @@ add_executable(OtusHomework_7_Interpreter
     Parsing/ParserCommand.hpp
     Analize/Analizer.hpp
     Analize/States.hpp
+    Data/Block.hpp
 )
 
 install(TARGETS OtusHomework_7_Interpreter

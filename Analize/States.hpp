@@ -8,18 +8,18 @@
 
 namespace Analize
 {
-    struct State
-    {
-        State() = default;
-        ~State() = default;
+//    struct State
+//    {
+//        State() = default;
+//        ~State() = default;
 
-        virtual  void execute ( std::unique_ptr<Parsing::ParserCommand>&& cmd ) = 0;
-    };
+//        virtual  void execute ( std::unique_ptr<Parsing::ParserCommand>&& cmd ) = 0;
+//    };
 
-    struct StateBase: public State
-    {
+//    struct StateBase: public State
+//    {
 
-    };
+//    };
 }
 
 #endif // STATES_HPP

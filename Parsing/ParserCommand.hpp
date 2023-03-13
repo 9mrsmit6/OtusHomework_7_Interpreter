@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <memory>
+#include <tuple>
 
 namespace Parsing
 {
@@ -16,24 +17,8 @@ namespace Parsing
         EndOfFile
     };
 
-    struct ParserCommand
-    {
-        ParserCommand(Lexeme lex):
-            lexeme{lex},
-            payload{nullptr}
-        {}
+    using ParseCommand = std::tuple<Lexeme, std::unique_ptr<std::string>>;
 
-        ParserCommand(Lexeme lex, std::unique_ptr<std::string>& payload_):
-            lexeme{lex},
-            payload{std::move(payload_)}
-        {}
-
-        ~ParserCommand() = default;
-
-
-        Lexeme lexeme;
-        std::unique_ptr<std::string> payload;
-    };
 }
 
 

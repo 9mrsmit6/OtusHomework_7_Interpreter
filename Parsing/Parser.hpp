@@ -22,17 +22,17 @@ namespace Parsing
             {
                 if(std::cin.eof())
                 {
-                    analyzer.execute(     std::make_unique<ParserCommand>(  Lexeme::EndOfFile ));
+                    analyzer.execute( {  Lexeme::EndOfFile, nullptr } );
                     return;
                 }
 
                 auto s=std::make_unique<std::string>();
                 std::getline(std::cin, *s);
 
-                testSimpleCmd(*s, "{", Lexeme::DynamicBlockStart);
-                testSimpleCmd(*s, "}", Lexeme::DynamicBlockStop);
+                if(     testSimpleCmd(*s, "{", Lexeme::DynamicBlockStart)   )   {   continue;   };
+                if(     testSimpleCmd(*s, "}", Lexeme::DynamicBlockStop)    )   {   continue;   };
 
-                analyzer.execute(     std::make_unique<ParserCommand>(  Lexeme::Command, s ));
+                analyzer.execute(    {  Lexeme::Command, s } );
 
             }
 
@@ -40,12 +40,14 @@ namespace Parsing
     private:
         A& analyzer;
 
-        void testSimpleCmd(const std::string& input, const std::string l, const Lexeme cmd)
+        bool  testSimpleCmd(const std::string& input, const std::string l, const Lexeme cmd)
         {
             if(input==l)
             {
-                analyzer.execute(     std::make_unique<ParserCommand>(  cmd ));
+                analyzer.execute(     {  cmd, nullptr }   );
+                return true;
             }
+            return false;
         }
     };
 }
