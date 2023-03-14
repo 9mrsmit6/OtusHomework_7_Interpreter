@@ -23,7 +23,7 @@ namespace Data
 
         void push(std::unique_ptr<std::string>&& payloadPtr)
         {
-            paylolds.push_back(payloadPtr);
+            paylolds.push_back(std::forward<std::unique_ptr<std::string>>(payloadPtr));
         }
 
         auto cbegin()

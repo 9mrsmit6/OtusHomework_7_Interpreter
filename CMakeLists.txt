@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(OtusHomework_7_Interpreter
     main.cpp
+    Analize/Analizer.cpp
     Parsing/Parser.hpp
     Parsing/ParserCommand.hpp
     Analize/Analizer.hpp
