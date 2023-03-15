@@ -26,14 +26,14 @@ namespace Data
             paylolds.push_back(std::forward<std::unique_ptr<std::string>>(payloadPtr));
         }
 
-        auto cbegin()
+        auto begin()
         {
-            return paylolds.cbegin();
+            return paylolds.begin();
         }
 
-        auto cend()
+        auto end()
         {
-            return paylolds.cend();
+            return paylolds.end();
         }
 
         std::time_t getCreationTime()

@@ -26,9 +26,7 @@ namespace Analize
     struct AnalizerListener
     {
         virtual void newBlockreceived(std::shared_ptr<Data::Block> block)=0;
-//        AnalizerListener()=default;
         virtual ~AnalizerListener()=default;
-
     };
 
     struct Printer: public AnalizerListener
@@ -44,13 +42,10 @@ namespace Analize
     };
 
 
-
-    template <BlockAnalizeStates in, BlockAnalizeStates base>
-    concept TypeSelector = (in==base);
-
-
     struct Analizer
     {
+
+        friend class State;
 
         Analizer(const std::size_t stBlockSize_):
             stBlockSize(stBlockSize_)
@@ -70,19 +65,23 @@ namespace Analize
             switch(currentState)
             {
                 case BlockAnalizeStates::Basic:
-                    handler<BlockAnalizeStates::Basic> (cmd);
+                    currentState=handlerBasic (cmd);
                     break;
 
                 case BlockAnalizeStates::StaticBlock:
-//                    handler<BlockAnalizeStates::StaticBlock> (cmd);
+                    currentState=handlerStaticBlock (cmd);
                     break;
 
                 case BlockAnalizeStates::DynamicBloc:
-//                    handler<BlockAnalizeStates::DynamicBloc> (cmd);
+                    currentState=handlerDynamicBlock (cmd);
                     break;
 
+                case BlockAnalizeStates::Skip:
+                    currentState=handlerSkip (cmd);
+                break;
+
                 default:
-//                    currentState=BlockAnalizeStates::Basic;
+                    currentState=BlockAnalizeStates::Basic;
                     break;
             }
         }
@@ -93,13 +92,18 @@ namespace Analize
         BlockAnalizeStates currentState{BlockAnalizeStates::Basic};
         const std::size_t stBlockSize;
 
-        template<BlockAnalizeStates current>
-        BlockAnalizeStates handler( Parsing::ParseCommand& cmd) requires TypeSelector <current,BlockAnalizeStates::Basic>;
+        BlockAnalizeStates handlerBasic         ( Parsing::ParseCommand& cmd);
+        BlockAnalizeStates handlerStaticBlock   ( Parsing::ParseCommand& cmd);
+        BlockAnalizeStates handlerDynamicBlock  ( Parsing::ParseCommand& cmd);
+        BlockAnalizeStates handlerSkip          ( Parsing::ParseCommand& cmd);
+
+
 
         std::list<std::weak_ptr<AnalizerListener>> listeners;
 
         void executeListeners()
         {
+            if(block==nullptr){return;}
             for(auto it=listeners.begin();it!=listeners.end();)
             {
                 auto cur=it;
