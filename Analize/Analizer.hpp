@@ -9,47 +9,26 @@
 #include "../Data/Block.hpp"
 
 #include <iostream>
+#include "States.hpp"
 
 
 namespace Analize
 {
-
-    enum class BlockAnalizeStates
-    {
-        Basic=0,
-        StaticBlock,
-        DynamicBloc,
-        Skip
-    };
-
-
     struct AnalizerListener
     {
         virtual void newBlockreceived(std::shared_ptr<Data::Block> block)=0;
         virtual ~AnalizerListener()=default;
     };
 
-    struct Printer: public AnalizerListener
+
+    struct Analizer :public StateListener
     {
-        void newBlockreceived(std::shared_ptr<Data::Block> block) override
-        {
-            std::cout<<"VAX"<<std::endl;
-        }
-
-        Printer()=default;
-        ~Printer()=default;
-
-    };
-
-
-    struct Analizer
-    {
-
-        friend class State;
 
         Analizer(const std::size_t stBlockSize_):
             stBlockSize(stBlockSize_)
-        {}
+        {
+            currentState=std::make_unique<StateBasic>(*this);
+        }
 
         void addListener(std::shared_ptr<AnalizerListener> lisPtr)
         {
@@ -58,48 +37,28 @@ namespace Analize
 
         void execute ( Parsing::ParseCommand cmd )
         {
-
-            switch(currentState)
+            auto temp=currentState->executeNewCommand(cmd);
+            if(temp)
             {
-                case BlockAnalizeStates::Basic:
-                    currentState=handlerBasic (cmd);
-                    break;
-
-                case BlockAnalizeStates::StaticBlock:
-                    currentState=handlerStaticBlock (cmd);
-                    break;
-
-                case BlockAnalizeStates::DynamicBloc:
-                    currentState=handlerDynamicBlock (cmd);
-                    break;
-
-                case BlockAnalizeStates::Skip:
-                    currentState=handlerSkip (cmd);
-                break;
-
-                default:
-                    currentState=BlockAnalizeStates::Basic;
-                    break;
+                currentState=std::move(temp.value());
             }
         }
 
+        void executeNewBlock(std::unique_ptr<Data::Block>& block) override
+        {
+            executeListeners(block);
+        }
+
+        std::size_t getStaticSize() override   {return stBlockSize;}
+
 
     private:
-        std::unique_ptr<Data::Block> block;
-        BlockAnalizeStates currentState{BlockAnalizeStates::Basic};
+        std::unique_ptr<State> currentState;
         const std::size_t stBlockSize;
-        std::size_t skipCnt{0};
-
-        BlockAnalizeStates handlerBasic         ( Parsing::ParseCommand& cmd);
-        BlockAnalizeStates handlerStaticBlock   ( Parsing::ParseCommand& cmd);
-        BlockAnalizeStates handlerDynamicBlock  ( Parsing::ParseCommand& cmd);
-        BlockAnalizeStates handlerSkip          ( Parsing::ParseCommand& cmd);
-
-
 
         std::list<std::weak_ptr<AnalizerListener>> listeners;
 
-        void executeListeners()
+        void executeListeners(std::unique_ptr<Data::Block>& block)
         {
             if(block==nullptr){return;}
             std::shared_ptr<Data::Block> temp=std::move(block);
@@ -119,9 +78,6 @@ namespace Analize
                 }
             }
         }
-
-
-
     };
 }
 
