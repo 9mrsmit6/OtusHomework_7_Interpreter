@@ -11,6 +11,7 @@ namespace Analize
         if(cmdInfo==Parsing::Lexeme::Command)
         {
             block=std::make_unique<Data::Block>(stBlockSize);
+            block->push(std::move(payload));
             return BlockAnalizeStates::StaticBlock;
         }
 
@@ -31,8 +32,19 @@ namespace Analize
 
         if(cmdInfo==Parsing::Lexeme::Command)
         {
+
             block->push(std::move(payload));
-            return BlockAnalizeStates::StaticBlock;
+
+            if(block->getSize()>=stBlockSize)
+            {
+                executeListeners();
+                return BlockAnalizeStates::Basic;
+            }
+            else
+            {
+                return BlockAnalizeStates::StaticBlock;
+            }
+
         }
 
         if(cmdInfo==Parsing::Lexeme::DynamicBlockStart)
@@ -64,6 +76,7 @@ namespace Analize
 
         if(cmdInfo==Parsing::Lexeme::DynamicBlockStart)
         {
+            skipCnt=1;
             return BlockAnalizeStates::Skip;
         }
 
@@ -75,7 +88,6 @@ namespace Analize
 
         if(cmdInfo==Parsing::Lexeme::EndOfFile)
         {
-            executeListeners();
             return BlockAnalizeStates::Basic;
         }
 
@@ -88,8 +100,20 @@ namespace Analize
     {
         auto& [cmdInfo, payload]=cmd;
 
+
+        if(cmdInfo==Parsing::Lexeme::DynamicBlockStart)
+        {
+            skipCnt++;
+            return BlockAnalizeStates::Skip;
+        }
+
         if(cmdInfo==Parsing::Lexeme::DynamicBlockStop)
         {
+            skipCnt--;
+            if(skipCnt!=0)
+            {
+               return BlockAnalizeStates::Skip;
+            }
             return BlockAnalizeStates::DynamicBloc;
         }
 

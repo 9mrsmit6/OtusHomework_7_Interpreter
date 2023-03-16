@@ -29,10 +29,12 @@ namespace Parsing
                 auto s=std::make_unique<std::string>();
                 std::getline(std::cin, *s);
 
+                if(*s==""){continue;}
+
                 if(     testSimpleCmd(*s, "{", Lexeme::DynamicBlockStart)   )   {   continue;   };
                 if(     testSimpleCmd(*s, "}", Lexeme::DynamicBlockStop)    )   {   continue;   };
 
-                analyzer.execute(    {  Lexeme::Command, s } );
+                analyzer.execute( {  Lexeme::Command, std::move(s) }  );
 
             }
 

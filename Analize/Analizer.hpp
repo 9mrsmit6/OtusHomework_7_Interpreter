@@ -59,9 +59,6 @@ namespace Analize
         void execute ( Parsing::ParseCommand cmd )
         {
 
-            auto& [cmdInfo, payload]=cmd;
-
-            //как от этого избавится???
             switch(currentState)
             {
                 case BlockAnalizeStates::Basic:
@@ -91,6 +88,7 @@ namespace Analize
         std::unique_ptr<Data::Block> block;
         BlockAnalizeStates currentState{BlockAnalizeStates::Basic};
         const std::size_t stBlockSize;
+        std::size_t skipCnt{0};
 
         BlockAnalizeStates handlerBasic         ( Parsing::ParseCommand& cmd);
         BlockAnalizeStates handlerStaticBlock   ( Parsing::ParseCommand& cmd);
@@ -104,14 +102,15 @@ namespace Analize
         void executeListeners()
         {
             if(block==nullptr){return;}
+            std::shared_ptr<Data::Block> temp=std::move(block);
+
             for(auto it=listeners.begin();it!=listeners.end();)
             {
                 auto cur=it;
                 it++;
 
                 if(auto sh=(*cur).lock())
-                {
-                    std::shared_ptr<Data::Block> temp=std::move(block);
+                {                    
                     (*cur).lock()->newBlockreceived(temp);
                 }
                 else

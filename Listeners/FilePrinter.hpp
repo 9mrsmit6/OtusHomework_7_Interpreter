@@ -20,7 +20,6 @@ namespace Listeners
 
 
             std::ofstream file(fileName.str(), std::ios::out);
-            file.open("file.txt");
             if(!file.is_open()){return;}
 
             printBlock(block, file);

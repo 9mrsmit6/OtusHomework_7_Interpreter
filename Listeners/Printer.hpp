@@ -12,10 +12,15 @@ namespace Listeners
     {
         stream<<"bulk: ";
 
+        bool isFirst{true};
+
         for(auto& v:(*block))
         {
+
+            if(!isFirst){     stream<<", ";         }
+            else        {     isFirst=false;        }
+
             stream<<(*v);
-            stream<<", ";
         }
     }
 
@@ -27,6 +32,7 @@ namespace Listeners
         void newBlockreceived(std::shared_ptr<Data::Block> block) override
         {
             printBlock(block, std::cout);
+            std::cout<<std::endl;
         }
     };
 

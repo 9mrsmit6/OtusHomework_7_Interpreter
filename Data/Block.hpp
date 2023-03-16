@@ -41,6 +41,11 @@ namespace Data
             return creationTime;
         }
 
+        auto getSize()
+        {
+            return paylolds.size();
+        }
+
 
         private:
             std::vector<std::unique_ptr<std::string>> paylolds;
