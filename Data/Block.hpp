@@ -4,7 +4,7 @@
 #include <vector>
 #include <utility>
 #include <memory>
-#include<ctime>
+#include <ctime>
 
 namespace Data
 {
@@ -20,6 +20,8 @@ namespace Data
             creationTime=std::time(nullptr);
             paylolds.reserve(N);
         }
+
+        ~Block()=default;
 
         void push(std::unique_ptr<std::string>&& payloadPtr)
         {

@@ -30,6 +30,8 @@ namespace Analize
             currentState=std::make_unique<StateBasic>(*this);
         }
 
+        ~Analizer()=default;
+
         void addListener(std::shared_ptr<AnalizerListener> lisPtr)
         {
             listeners.push_front(lisPtr);

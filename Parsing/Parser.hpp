@@ -15,6 +15,8 @@ namespace Parsing
             analyzer{analyzer_}
         {}
 
+        ~Parser()=default;
+
         void parse()
         {
 
