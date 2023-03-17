@@ -29,7 +29,7 @@ namespace Parsing
                 auto s=std::make_unique<std::string>();
                 std::getline(std::cin, *s);
 
-                if(*s==""){continue;}
+                if(*s=="")  {   continue;   }
 
                 if(     testSimpleCmd(*s, "{", Lexeme::DynamicBlockStart)   )   {   continue;   };
                 if(     testSimpleCmd(*s, "}", Lexeme::DynamicBlockStop)    )   {   continue;   };
@@ -39,6 +39,8 @@ namespace Parsing
             }
 
         }
+
+        ~Parser()=default;
     private:
         A& analyzer;
 

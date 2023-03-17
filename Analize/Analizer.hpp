@@ -8,8 +8,6 @@
 #include <list>
 #include "../Data/Block.hpp"
 
-#include <iostream>
-
 
 namespace Analize
 {
@@ -29,23 +27,9 @@ namespace Analize
         virtual ~AnalizerListener()=default;
     };
 
-    struct Printer: public AnalizerListener
-    {
-        void newBlockreceived(std::shared_ptr<Data::Block> block) override
-        {
-            std::cout<<"VAX"<<std::endl;
-        }
-
-        Printer()=default;
-        ~Printer()=default;
-
-    };
-
 
     struct Analizer
     {
-
-        friend class State;
 
         Analizer(const std::size_t stBlockSize_):
             stBlockSize(stBlockSize_)
@@ -110,7 +94,7 @@ namespace Analize
                 it++;
 
                 if(auto sh=(*cur).lock())
-                {                    
+                {
                     (*cur).lock()->newBlockreceived(temp);
                 }
                 else

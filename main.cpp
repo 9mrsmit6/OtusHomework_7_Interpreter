@@ -1,12 +1,10 @@
 #include <iostream>
 #include "Parsing/Parser.hpp"
 #include "Analize/Analizer.hpp"
-#include "Data/Block.hpp"
 #include "Listeners/Printer.hpp"
 #include "Listeners/FilePrinter.hpp"
 #include <memory>
 #include <string>
-#include <utility>
 
 
 using namespace std;
@@ -23,7 +21,7 @@ int main(int argc, char *argv[])
     catch(...)
     {
         sz=3;
-        std::cout<<"static block size is wrong:  3 selected"<<std::endl;
+        std::cout<<"static block size is wrong: 3 selected"<<std::endl;
     }
 
 
@@ -34,11 +32,11 @@ int main(int argc, char *argv[])
     }
 
 
-    Analize::Analizer analyzer{sz};
-    Parsing::Parser parser{analyzer};
+    Analize::Analizer analyzer  {sz};
+    Parsing::Parser parser      {analyzer};
 
     auto consolePrinter = std::make_shared<Listeners::Printer>();
-    auto filePrinter = std::make_shared<Listeners::FilePrinter>();
+    auto filePrinter    = std::make_shared<Listeners::FilePrinter>();
 
 
     analyzer.addListener(consolePrinter);
